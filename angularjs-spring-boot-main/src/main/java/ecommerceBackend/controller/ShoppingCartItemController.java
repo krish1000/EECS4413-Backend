@@ -72,10 +72,10 @@ public class ShoppingCartItemController {
     	}
     	// if item is already in shopping cart and there is quantity in request body
     	// then only change the quantity and price of shopping cart item
-    	for (int i = 0; i < sc.getItems().size(); i++) {
+    	for (int i = 0; i < sc.getShoppingCartItems().size(); i++) {
     		
-    		if (sc.getItems().get(i).getItemId() == itemId) {
-    			ShoppingCartItem scItem = sc.getItems().get(i);
+    		if (sc.getShoppingCartItems().get(i).getItemId() == itemId) {
+    			ShoppingCartItem scItem = sc.getShoppingCartItems().get(i);
     			// checks if quantity in request body is greater than item quantity.
     			// if it is, do nothing.
     			if (scItem.getQuantity() > item.getQuantity()) {

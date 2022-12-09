@@ -20,6 +20,12 @@ public class User {
 //    private String bid;
 	private String name;
 	
+	@Column(name ="shopping_cart_id")
+	private Long shoppingCartId;
+	
+	@Column(name ="address_id")
+	private Long addressId;
+	
 	@Column(nullable = false)
     private String firstName;
 	
@@ -34,13 +40,15 @@ public class User {
     
     private boolean signedIn;
     
-    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
-    private ShoppingCart shoppingCart;
+//    @Column(name = "shopping_cart")
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "shopping_cart")
+//    private ShoppingCart shoppingCart;
     
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
+    
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "address_id", referencedColumnName = "id")
+//    private Address address;
     
     public User() {
     	
@@ -50,8 +58,8 @@ public class User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.setName();
-		shoppingCart = new ShoppingCart();
-		this.address = new Address();
+//		shoppingCart = new ShoppingCart();
+//		this.address = new Address();
 	}
 	
 //	public User(String firstName, String lastName, Address address) {
@@ -72,7 +80,22 @@ public class User {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public Long getShoppingCartId() {
+		return shoppingCartId;
+	}
 
+	public void setShoppingCartId(Long shoppingCartId) {
+		this.shoppingCartId = shoppingCartId;
+	}
+
+	public Long getAddressId() {
+		return addressId;
+	}
+
+	public void setAddressId(Long addressId) {
+		this.addressId = addressId;
+	}
 	
 //	public String getBid() {
 //		return bid;
@@ -109,17 +132,17 @@ public class User {
 		this.setName();
 	}
 	
-	public Address getAddress() {
-		return this.address;
-	}
-	
-	public ShoppingCart getShoppingCart() {
-		return this.shoppingCart;
-	}
-	
-	public ShoppingCart setShoppingCart(ShoppingCart sc) {
-		return this.shoppingCart = sc;
-	}
+//	public Address getAddress() {
+//		return this.address;
+//	}
+//	
+//	public ShoppingCart getShoppingCart() {
+//		return this.shoppingCart;
+//	}
+//	
+//	public ShoppingCart setShoppingCart(ShoppingCart sc) {
+//		return this.shoppingCart = sc;
+//	}
 	
 	public String getEmail() {
 		return email;
@@ -144,6 +167,7 @@ public class User {
 	public void setSignedIn(boolean signedIn) {
 		this.signedIn = signedIn;
 	}
+	
 	
 	// do equals method
 	@Override

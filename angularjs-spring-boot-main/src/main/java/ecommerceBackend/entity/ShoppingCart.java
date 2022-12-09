@@ -32,7 +32,7 @@ public class ShoppingCart {
 	
 //	@Column(name = "cart_items")
 	@ElementCollection
-	private List<ShoppingCartItem> itemIds = new ArrayList<ShoppingCartItem>();
+	private List<ShoppingCartItem> shoppingCartItems = new ArrayList<ShoppingCartItem>();
   
 	public ShoppingCart() {
 		
@@ -58,20 +58,31 @@ public class ShoppingCart {
 		return this.userId;
 	}
 	
-	public List<ShoppingCartItem> getItems() {
-		return this.itemIds;
+	public void setUserId(Long id) {
+		this.userId = id;
+	}
+	
+	public List<ShoppingCartItem> getShoppingCartItems() {
+		return this.shoppingCartItems;
+	}
+	public List<ShoppingCartItem> setShoppingCartItems(List<ShoppingCartItem> scItems) {
+		return this.shoppingCartItems = scItems;
 	}
 	
 	public void addShoppingCartItemId(ShoppingCartItem item) {
-		this.itemIds.add(item);
+		this.shoppingCartItems.add(item);
 	}
 	
 	public void deleteShoppingCartItemId(ShoppingCartItem item) {
-		for (int i = 0; i < this.getItems().size(); i++) {
-			if (this.getItems().get(i).getId() == item.getId()) {
-				this.itemIds.remove(i);
+		for (int i = 0; i < this.getShoppingCartItems().size(); i++) {
+			if (this.getShoppingCartItems().get(i).getId() == item.getId()) {
+				this.shoppingCartItems.remove(i);
 			}
 		}
+	}
+	
+	public void deleteAllShoppingCartItems() {
+		this.shoppingCartItems.clear();
 	}
 	
 	
@@ -90,7 +101,7 @@ public class ShoppingCart {
 	// do equals method
 	@Override
 	public int hashCode() {
-      return Objects.hash(this.getId(), this.itemIds);
+      return Objects.hash(this.getId(), this.shoppingCartItems);
 //		return super.hashCode();
 	}
 
@@ -102,7 +113,7 @@ public class ShoppingCart {
 	        if (!(o instanceof ShoppingCart))
 	            return false;
 	        ShoppingCart sc = (ShoppingCart) o;
-	        return Objects.equals(this.getId(), sc.getId()) && Objects.equals(this.itemIds, sc.itemIds);
+	        return Objects.equals(this.getId(), sc.getId()) && Objects.equals(this.shoppingCartItems, sc.shoppingCartItems);
 	        //FINISH EQUALS
 	}
 	//hascode
@@ -118,7 +129,7 @@ public class ShoppingCart {
   public String toString() {
       return "ShoppingCart{" 
       		+ "id=" + this.getId() 
-      		+ ", itemIds=" + this.itemIds
+      		+ ", itemIds=" + this.shoppingCartItems
       		+ '}';
   }
 
