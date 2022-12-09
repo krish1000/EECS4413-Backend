@@ -1,11 +1,8 @@
 package ecommerceBackend.repository;
 
-import java.util.Collection;
-
 //import java.util.Collection;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.hateoas.EntityModel;
 //import org.springframework.hateoas.EntityModel; //ignore 
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +17,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 //	public ItemRepository() {
 //		
 //	}
-	
+
 	//ignore this for now -krish
 //	public Object save(Item newItem) {
 //		

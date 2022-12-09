@@ -23,7 +23,7 @@ public class Address {
     
     public Address() {
     }
-    
+
 	public Address(Long userID, String street, String province, String country, String zip, String phone) {
 		//super();
 		//not including id of address
