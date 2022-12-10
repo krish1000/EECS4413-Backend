@@ -21,22 +21,24 @@ import ecommerceBackend.assembler.UserModelAssembler;
 import ecommerceBackend.entity.Address;
 import ecommerceBackend.entity.ShoppingCart;
 import ecommerceBackend.entity.User;
+import ecommerceBackend.exception.AddressNotFoundException;
 import ecommerceBackend.exception.ShoppingCartNotFoundException;
 import ecommerceBackend.exception.UserNotFoundException;
 import ecommerceBackend.repository.AddressRepository;
+import ecommerceBackend.repository.ShoppingCartItemRepository;
 import ecommerceBackend.repository.ShoppingCartRepository;
 import ecommerceBackend.repository.UserRepository;
 
 @RestController
 public class UserController {
-	private final UserRepository repository;
+	private final UserRepository userRepository;
 	private ShoppingCartRepository scRepository;
 	private AddressRepository addressRepository;
     private UserModelAssembler assembler;
     
     public UserController(UserRepository repository, UserModelAssembler assembler, 
     					ShoppingCartRepository sc, AddressRepository addressRepository) {
-        this.repository = repository;
+        this.userRepository = repository;
         this.assembler = assembler;
         this.scRepository = sc;
         this.addressRepository = addressRepository;
@@ -47,7 +49,7 @@ public class UserController {
     @GetMapping("/users")
     public CollectionModel<EntityModel<User>> all() {
 
-        List<EntityModel<User>> users = repository.findAll()
+        List<EntityModel<User>> users = userRepository.findAll()
                 .stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
@@ -58,12 +60,13 @@ public class UserController {
     @PostMapping("/users")
     public ResponseEntity<?> newUser(@RequestBody User newUser) {
 
-    	EntityModel<User> entityModel = assembler.toModel(repository.save(newUser));
-    	User user = repository.findById(newUser.getId()).orElseThrow(() -> new ShoppingCartNotFoundException(newUser.getId()));
+    	EntityModel<User> entityModel = assembler.toModel(userRepository.save(newUser));
+    	User user = userRepository.findById(newUser.getId()).orElseThrow(() -> new ShoppingCartNotFoundException(newUser.getId()));
 //        System.out.println(user.getShoppingCartId());
 //        System.out.println(user.getAddressId());
     	ShoppingCart sc = new ShoppingCart(newUser.getId());
         Address address = new Address();
+        address.setUserID(user.getId());
         scRepository.save(sc);
         addressRepository.save(address);
 //        System.out.println(newUser);
@@ -74,7 +77,7 @@ public class UserController {
         user.setAddressId(address.getId());
 //        System.out.println(user.getShoppingCartId());
 //        System.out.println(user.getAddressId());
-        repository.save(user);
+        userRepository.save(user);
         sc.setUserId(newUser.getId());
 //        System.out.println(address.getId());
 //        System.out.println(sc.getId());
@@ -89,20 +92,26 @@ public class UserController {
     @GetMapping("/users/{id}")
     public EntityModel<User> one(@PathVariable Long id) {
 
-        User user = repository.findById(id) //
+        User user = userRepository.findById(id) //
                 .orElseThrow(() -> new UserNotFoundException(id));
 
         return assembler.toModel(user);
     }
     
+    // might not need this cause project doesnt say we need it
+    // but i use it for testing stuff idk
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
 //    	System.out.println(id);
-    	User user = repository.findById(id).orElseThrow(() -> new ShoppingCartNotFoundException(id));
+    	User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 //    	System.out.println("user id: " + user.getId());
-    	scRepository.findById(user.getShoppingCartId()).orElseThrow(() -> new ShoppingCartNotFoundException(user.getShoppingCartId()));
+//    	ShoppingCart sc = scRepository.findById(user.getShoppingCartId()).orElseThrow(() -> new ShoppingCartNotFoundException(user.getShoppingCartId()));
+//    	Address address = addressRepository.findById(user.getAddressId()).orElseThrow(() -> new AddressNotFoundException(user.getAddressId()));
+    	addressRepository.deleteById(user.getAddressId());
+    	scRepository.deleteById(user.getShoppingCartId());
+//    	sciR
 //        System.out.println("hello");
-    	repository.deleteById(id);
+    	userRepository.deleteById(id);
 //        System.out.println("hello");
         return ResponseEntity.noContent().build();
     }

@@ -20,10 +20,8 @@ public class User {
 //    private String bid;
 	private String name;
 	
-	@Column(name ="shopping_cart_id")
 	private Long shoppingCartId;
 	
-	@Column(name ="address_id")
 	private Long addressId;
 	
 	@Column(nullable = false)

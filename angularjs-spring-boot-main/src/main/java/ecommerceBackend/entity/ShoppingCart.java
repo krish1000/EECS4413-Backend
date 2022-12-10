@@ -73,6 +73,7 @@ public class ShoppingCart {
 		this.shoppingCartItems.add(item);
 	}
 	
+	// deletes a single shopping cart item
 	public void deleteShoppingCartItemId(ShoppingCartItem item) {
 		for (int i = 0; i < this.getShoppingCartItems().size(); i++) {
 			if (this.getShoppingCartItems().get(i).getId() == item.getId()) {
@@ -81,6 +82,7 @@ public class ShoppingCart {
 		}
 	}
 	
+	// deletes all shopping cart items
 	public void deleteAllShoppingCartItems() {
 		this.shoppingCartItems.clear();
 	}

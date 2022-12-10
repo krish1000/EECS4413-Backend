@@ -3,6 +3,7 @@ package ecommerceBackend.controller;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,29 @@ public class ItemController {
 
         return CollectionModel.of(items, linkTo(methodOn(ItemController.class).all()).withSelfRel());
     }
-
+    
+    // get items by Type
+    @GetMapping("/items/type/{type}")
+    public CollectionModel<EntityModel<Item>> allByType(@PathVariable String type) {
+    	List<EntityModel<Item>> items = repository.findAll()
+                .stream().filter(item -> item.getType().equals(type))
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+    	return CollectionModel.of(items, linkTo(methodOn(ItemController.class).all()).withSelfRel());
+    }
+    
+    // get items by Brand
+    @GetMapping("/items/brand/{brand}")
+    public CollectionModel<EntityModel<Item>> allByBrand(@PathVariable String brand) {
+    	List<EntityModel<Item>> items = repository.findAll()
+                .stream().filter(item -> item.getBrand().equals(brand))
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+    	
+    	return CollectionModel.of(items, linkTo(methodOn(ItemController.class).all()).withSelfRel());
+    }
+    
+    
     @PostMapping("/items")
     public ResponseEntity<?> newItem(@RequestBody Item newItem) {
 
@@ -62,6 +85,7 @@ public class ItemController {
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) 
                 .body(entityModel);
     }
+    
 
 
     // Single item
