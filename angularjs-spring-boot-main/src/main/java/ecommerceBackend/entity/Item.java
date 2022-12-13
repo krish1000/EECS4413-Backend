@@ -1,11 +1,16 @@
 package ecommerceBackend.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 // On local connection; get url is: http://localhost:8080/demo/items
 
@@ -20,6 +25,10 @@ public class Item {
     private String brand;
     private int quantity;
     private double price;
+    
+    @OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="review_id")
+    private List<Review> reviews = new ArrayList<Review>();
     
     public Item() {
     }
@@ -100,10 +109,18 @@ public class Item {
 		this.price = price;
 	}
 	
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+	
 	// do equals method
 	@Override
 	public int hashCode() {
-        return Objects.hash(this.id, this.name, this.description, this.type, this.brand, this.quantity, this.price);
+        return Objects.hash(this.id, this.name, this.description, this.type, this.brand, this.quantity, this.price, this.reviews);
 //		return super.hashCode();
 	}
 
@@ -115,7 +132,9 @@ public class Item {
 	        if (!(o instanceof Item))
 	            return false;
 	        Item item = (Item) o;
-	        return Objects.equals(this.id, item.id) && Objects.equals(this.name, item.name);
+	        return Objects.equals(this.id, item.id) && Objects.equals(this.name, item.name) && Objects.equals(this.description, item.description)
+        		&& Objects.equals(this.type, item.type) && Objects.equals(this.brand, item.brand) && Objects.equals(this.quantity, item.quantity)
+        		&& Objects.equals(this.price, item.price) && Objects.equals(this.reviews, item.reviews);
 	        //FINISH EQUALS
 	}
 	//hascode

@@ -2,10 +2,13 @@ package ecommerceBackend.entity;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 // On local connection; get url is: http://localhost:8080/demo/items
 
@@ -14,21 +17,33 @@ public class Address {
 	
 	private @Id @GeneratedValue Long id;
 //    private String bid;
-    private Long userID;
+	
+//	@ManyToOne
+//	private User user;
+//    private Long userID;
+	@Column(nullable=false)
     private String street;
+	
+	@Column(nullable=false)
     private String province;
+	
+	@Column(nullable=false)
     private String country;
+	
+	@Column(nullable=false)
     private String zip;
+	
     private String phone;
     
     public Address() {
     }
 
-	public Address(Long userID, String street, String province, String country, String zip, String phone) {
+	public Address(String street, String province, String country, String zip, String phone) {
 		//super();
 		//not including id of address
 		/**maybe we should also include orderid? OR order will contain addressID **/
-		this.userID = userID;
+//		this.userID = userID;
+//		this.user = user;
 		this.street = street;
 		this.province = province;
 		this.country = country;
@@ -45,13 +60,13 @@ public class Address {
 		this.id = id;
 	}
 
-	public Long getUserID() {
-		return userID;
-	}
-
-	public void setUserID(Long userID) {
-		this.userID = userID;
-	}
+//	public Long getUserID() {
+//		return userID;
+//	}
+//
+//	public void setUserID(Long userID) {
+//		this.userID = userID;
+//	}
 
 	public String getStreet() {
 		return street;
@@ -97,7 +112,8 @@ public class Address {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(country, id, phone, province, street, userID, zip);
+//		userID, user
+		return Objects.hash(country, id, phone, province, street, zip);
 	}
 
 	@Override
@@ -111,7 +127,9 @@ public class Address {
 		Address other = (Address) obj;
 		return Objects.equals(country, other.country) && Objects.equals(id, other.id)
 				&& Objects.equals(phone, other.phone) && Objects.equals(province, other.province)
-				&& Objects.equals(street, other.street) && Objects.equals(userID, other.userID)
+				// userID
+				&& Objects.equals(street, other.street) 
+//				&& Objects.equals(user, other.user)
 				&& Objects.equals(zip, other.zip);
 	}
 	
@@ -128,7 +146,7 @@ public class Address {
     public String toString() {
         return "Address{" 
         		+ "id=" + this.id 
-        		+ ", userID='" + this.userID + '\'' 
+//        		+ ", user='" + this.user + '\'' 
         		+ ", street='" + this.street + '\''
         		+ ", province='" + this.province + '\''
         		+ ", country='" + this.country + '\''
@@ -136,6 +154,14 @@ public class Address {
         		+ ", phone='" + this.phone
         		+ '}';
     }
+
+//	public User getUser() {
+//		return user;
+//	}
+//
+//	public void setUser(User user) {
+//		this.user = user;
+//	}
 
 	
 

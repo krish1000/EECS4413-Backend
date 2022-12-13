@@ -1,96 +1,59 @@
 package ecommerceBackend.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 //import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 //import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import ecommerceBackend.assembler.AddressModelAssembler;
 import ecommerceBackend.entity.Address;
-import ecommerceBackend.exception.AddressNotFoundException;
-import ecommerceBackend.repository.AddressRepository;
+import ecommerceBackend.service.AddressService;
 
 @RestController
 public class AddressController {
 
-    private final AddressRepository repository;
-    private AddressModelAssembler assembler;
+	@Autowired
+	private final AddressService addressService;
     
-    public AddressController(AddressRepository repository, AddressModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
-        
+    public AddressController(AddressService addressService) {
+    	this.addressService = addressService;
     }
 
     // Aggregate root
 
     @GetMapping("/addresses")
     public CollectionModel<EntityModel<Address>> all() {
-
-        List<EntityModel<Address>> items = repository.findAll()
-                .stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(items, linkTo(methodOn(AddressController.class).all()).withSelfRel());
+    	return addressService.all();
     }
-
-    @PostMapping("/addresses")
-    public ResponseEntity<?> newItem(@RequestBody Address newEntity) {
-
-        EntityModel<Address> entityModel = assembler.toModel(repository.save(newEntity));
-
-        return ResponseEntity 
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) 
-                .body(entityModel);
-    }
-
 
     // Single item
     @GetMapping("/addresses/{id}")
     public EntityModel<Address> one(@PathVariable Long id) {
-
-        Address entity = repository.findById(id) //
-                .orElseThrow(() -> new AddressNotFoundException(id));
-
-        return assembler.toModel(entity);
+    	return addressService.one(id);
     }
-//
-//    @PutMapping("/employees/{id}")
-//    public ResponseEntity<?> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
-//
-//        Employee updatedEmployee = repository.findById(id)
-//                .map(employee -> {
-//                    employee.setName(newEmployee.getName());
-//                    employee.setRole(newEmployee.getRole());
-//                    return repository.save(employee);
-//                })
-//                .orElseGet(() -> {
-//                    newEmployee.setId(id);
-//                    return repository.save(newEmployee);
-//                });
-//        
-//        EntityModel<Employee> entityModel = assembler.toModel(updatedEmployee);
-//        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
-//        
-//    }
-//
-//    @DeleteMapping("/employees/{id}")
-//    public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
-//        repository.deleteById(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    
+    @PostMapping("/addresses/{user_id}")
+    public ResponseEntity<?> newItem(@RequestBody Address newEntity, @PathVariable Long user_id) {
+    	return addressService.newItem(newEntity, user_id);
+    }
+    
+    @PutMapping("/addresses/{address_id}")
+    public ResponseEntity<?> updateItem(@RequestBody Address newEntity, @PathVariable Long address_id) {
+    	return addressService.replaceItem(newEntity, address_id);
+    }
+    
+    
+    @DeleteMapping("/addresses/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
+      return addressService.deleteAddress(id);
+    }
+
 }

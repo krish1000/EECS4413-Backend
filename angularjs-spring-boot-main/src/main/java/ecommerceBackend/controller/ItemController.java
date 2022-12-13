@@ -6,10 +6,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 //import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,7 @@ import ecommerceBackend.assembler.ItemModelAssembler;
 import ecommerceBackend.entity.Item;
 import ecommerceBackend.exception.ItemNotFoundException;
 import ecommerceBackend.repository.ItemRepository;
+import ecommerceBackend.service.ItemService;
 
 //import payroll.assembler.EmployeeModelAssembler;
 //import payroll.entity.Employee;
@@ -31,71 +35,47 @@ import ecommerceBackend.repository.ItemRepository;
 @RestController
 public class ItemController {
 
-    private final ItemRepository repository;
-    private ItemModelAssembler assembler;
+	@Autowired
+    private final ItemService itemService;
     
-    public ItemController(ItemRepository repository, ItemModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
-        
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     // Aggregate root
 
     @GetMapping("/items")
     public CollectionModel<EntityModel<Item>> all() {
-
-        List<EntityModel<Item>> items = repository.findAll()
-                .stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(items, linkTo(methodOn(ItemController.class).all()).withSelfRel());
+    	return itemService.all();
     }
-
-    @PostMapping("/items")
-    public ResponseEntity<?> newItem(@RequestBody Item newItem) {
-
-        EntityModel<Item> entityModel = assembler.toModel(repository.save(newItem));
-
-        return ResponseEntity 
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) 
-                .body(entityModel);
-    }
-
-
+    
     // Single item
     @GetMapping("/items/{id}")
     public EntityModel<Item> one(@PathVariable Long id) {
-
-        Item item = repository.findById(id) //
-                .orElseThrow(() -> new ItemNotFoundException(id));
-
-        return assembler.toModel(item);
+    	return itemService.one(id);
     }
-//
-//    @PutMapping("/employees/{id}")
-//    public ResponseEntity<?> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
-//
-//        Employee updatedEmployee = repository.findById(id)
-//                .map(employee -> {
-//                    employee.setName(newEmployee.getName());
-//                    employee.setRole(newEmployee.getRole());
-//                    return repository.save(employee);
-//                })
-//                .orElseGet(() -> {
-//                    newEmployee.setId(id);
-//                    return repository.save(newEmployee);
-//                });
-//        
-//        EntityModel<Employee> entityModel = assembler.toModel(updatedEmployee);
-//        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
-//        
-//    }
-//
-//    @DeleteMapping("/employees/{id}")
-//    public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
-//        repository.deleteById(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    
+    // get items by Type
+    @GetMapping("/items/type/{type}")
+    public CollectionModel<EntityModel<Item>> allByType(@PathVariable String type) {
+    	return itemService.allByType(type);
+    }
+    
+    // get items by Brand
+    @GetMapping("/items/brand/{brand}")
+    public CollectionModel<EntityModel<Item>> allByBrand(@PathVariable String brand) {
+    	return itemService.allByBrand(brand);
+    }
+    
+    @PostMapping("/items")
+    public ResponseEntity<?> newItem(@RequestBody Item newItem) {
+    	return itemService.newItem(newItem);
+    }
+    
+    @DeleteMapping("/items/{id}")
+    public ResponseEntity<?> deleteItem(@PathVariable Long id) {
+    	return itemService.deleteItem(id);
+	}
+    
+    // didn't do delete and put
 }
