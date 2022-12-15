@@ -56,6 +56,19 @@
 			<scope>provided</scope>
 		</dependency>
 		
+		<!-- Spring JDBC Support -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<!--<version>${spring-framework.version}</version> -->
+		</dependency>
+		
+		<!-- MySQL Driver -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<!--<version>5.0.5</version>-->
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -2,7 +2,7 @@ angular.module('demo',  [])
 .controller('Employee', function($scope, $http) {
     
     //get the list of employees
-    $http.get('/employees').
+    $http.get('/demo/employees').
         then(function(response) {
             $scope.employees = response.data._embedded.employeeList;
         });
@@ -38,7 +38,7 @@ angular.module('demo',  [])
 			if(employee.deleted){
 				if(employee.id != null){
 					//delete record
-				    $http.delete('/employees' + employee.id).
+				    $http.delete('/demo/employees' + employee.id).
 				        then(function(response) {
 							var index = $scope.employees.indexOf(employee);
 		  					$scope.employees.splice(index, 1);  
@@ -46,13 +46,13 @@ angular.module('demo',  [])
 				}
 			} else if(employee.id == null){
 				//create new record
-			    $http.post('/employees', employee).
+			    $http.post('/demo/employees', employee).
 			        then(function(response) {
 						employee.id = response.data.id;
 			        });
 			} else {
 				//edit existing record
-			    $http.put('/employees' + employee.id, employee).
+			    $http.put('/demo/employees' + employee.id, employee).
 			        then(function(response) {});
 			}
 		});

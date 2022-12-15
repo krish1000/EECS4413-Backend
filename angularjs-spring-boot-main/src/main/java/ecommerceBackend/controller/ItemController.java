@@ -28,9 +28,16 @@ import ecommerceBackend.repository.ItemRepository;
 //import payroll.exception.EmployeeNotFoundException;
 //import payroll.repository.EmployeeRepository;
 
+/************TESTING SQL CONNECTION we need autowired
+ * https://spring.io/guides/gs/accessing-data-mysql/
+ */
+import org.springframework.beans.factory.annotation.Autowired;
+
 @RestController
 public class ItemController {
 
+	//THIS IS FOR SQL CONNECTION STUFF:
+	@Autowired
     private final ItemRepository repository;
     private ItemModelAssembler assembler;
     
