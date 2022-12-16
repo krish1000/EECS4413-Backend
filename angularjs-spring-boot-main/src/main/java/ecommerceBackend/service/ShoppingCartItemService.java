@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.hateoas.CollectionModel;
@@ -25,21 +26,25 @@ import ecommerceBackend.exception.ShoppingCartNotFoundException;
 import ecommerceBackend.repository.ItemRepository;
 import ecommerceBackend.repository.ShoppingCartItemRepository;
 import ecommerceBackend.repository.ShoppingCartRepository;
+import ecommerceBackend.repository.UserRepository;
 
 @Service
 public class ShoppingCartItemService {
 
 	private final ShoppingCartItemRepository shoppingCartItemRepository;
+	private final UserRepository userRepository;
 	private final ShoppingCartRepository shoppingCartRepository;
 	private final ItemRepository itemRepository;
 	private final ShoppingCartItemModelAssembler assembler;
 	
 	public ShoppingCartItemService(ShoppingCartItemRepository shoppingCartItemRepository, ShoppingCartItemModelAssembler assembler,
-								   ShoppingCartRepository shoppingCartRepository, ItemRepository itemRepository) {
+								   ShoppingCartRepository shoppingCartRepository, ItemRepository itemRepository,
+								   UserRepository userRepository) {
 		this.shoppingCartItemRepository = shoppingCartItemRepository;
 		this.shoppingCartRepository = shoppingCartRepository;
 		this.itemRepository = itemRepository;
 		this.assembler = assembler;
+		this.userRepository = userRepository;
 	}
 	
 //	@GetMapping("/shopping-cart-items")
@@ -79,7 +84,7 @@ public class ShoppingCartItemService {
 		newShoppingCartItem.setItem(item);
 		newShoppingCartItem.setItemId(item.getId()); 
 		shoppingCart.getShoppingCartItems().add(newShoppingCartItem); 
-        	
+        
     	EntityModel<ShoppingCartItem> entityModel = assembler.toModel(shoppingCartItemRepository.save(newShoppingCartItem));
     	
         return ResponseEntity 
@@ -117,4 +122,12 @@ public class ShoppingCartItemService {
 		}
 		return false;
 	}
+	
+//	public static String createRandomIpAddress() {
+//        return randomNumber() + "." + randomNumber() + "." + randomNumber() + "." + randomNumber();
+//    }
+//
+//    public static int randomNumber() {
+//        return new Random().nextInt((255 - 1) + 1) + 1;
+//    }
 }

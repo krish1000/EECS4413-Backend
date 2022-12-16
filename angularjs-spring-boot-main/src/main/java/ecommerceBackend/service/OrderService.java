@@ -4,7 +4,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.hateoas.CollectionModel;
@@ -26,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import ecommerceBackend.assembler.OrderModelAssembler;
 import ecommerceBackend.assembler.ShoppingCartItemModelAssembler;
 import ecommerceBackend.controller.OrderController;
+import ecommerceBackend.entity.Event;
 import ecommerceBackend.entity.Item;
 import ecommerceBackend.entity.Order;
 import ecommerceBackend.entity.ShoppingCart;
@@ -35,6 +38,7 @@ import ecommerceBackend.exception.ItemNotFoundException;
 import ecommerceBackend.exception.OrderNotFoundException;
 import ecommerceBackend.exception.ShoppingCartNotFoundException;
 import ecommerceBackend.exception.UserNotFoundException;
+import ecommerceBackend.repository.EventRepository;
 import ecommerceBackend.repository.ItemRepository;
 import ecommerceBackend.repository.OrderRepository;
 import ecommerceBackend.repository.ShoppingCartRepository;
@@ -47,16 +51,18 @@ public class OrderService {
 	private final ShoppingCartRepository shoppingCartRepository;
 	private final UserRepository userRepository;
 	private final ItemRepository itemRepository;
+	private final EventRepository eventRepository;
 	private final OrderModelAssembler assembler;
 	
 	public OrderService(OrderRepository repository, OrderModelAssembler assembler, 
 			   ShoppingCartRepository shoppingCartRepository, UserRepository userRepository,
-			   ItemRepository itemRepository) {
+			   ItemRepository itemRepository, EventRepository eventRepository) {
 		this.repository = repository;
 		this.assembler = assembler;
 		this.shoppingCartRepository = shoppingCartRepository;
 		this.userRepository = userRepository;
 		this.itemRepository = itemRepository;
+		this.eventRepository = eventRepository;
 	}
 	
 //	@GetMapping("/orders")
@@ -107,13 +113,32 @@ public class OrderService {
 			}
 		}
 		
+//		Map<Long, Integer> itemsBought = new HashMap<>();
+		int totalValueOfItems = 0;
+		StringBuilder quantityOfItems = new StringBuilder();
 		// Reduce quantity from store stock
+		int i = 0;
 		for(ShoppingCartItem cartItem: shoppingCart.getShoppingCartItems()) {
 			Long cartItemId = cartItem.getItemId();
 			Item item = itemRepository.findById(cartItemId).orElseThrow(() -> new ItemNotFoundException(cartItemId));
 			
 			item.setQuantity(item.getQuantity() - cartItem.getQuantity());
+			
+			i++;
+			if (i == shoppingCart.getShoppingCartItems().size()-1) {
+				quantityOfItems.append("Quantity: " + cartItem.getQuantity() + " " + item.getName()+ ", ");				
+			} else {
+				quantityOfItems.append("Quantity: " + cartItem.getQuantity() + " " + item.getName());
+			}
+			
+			totalValueOfItems += cartItem.getQuantity()*item.getPrice();
+//			itemsBought.put(item.getId(), cartItem.getQuantity());
 		}
+		String description = "User " + user.getUsername() + " has purchased $" + totalValueOfItems +
+							" worth of items";
+		
+		Event event = new Event(description, quantityOfItems.toString(), totalValueOfItems);
+		eventRepository.save(event);
 		
     	//set order from shopping cart
     	order.setShoppingCart(shoppingCart);

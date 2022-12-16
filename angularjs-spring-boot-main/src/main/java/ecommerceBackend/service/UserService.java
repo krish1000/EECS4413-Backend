@@ -19,20 +19,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import ecommerceBackend.assembler.UserModelAssembler;
 import ecommerceBackend.controller.UserController;
+import ecommerceBackend.entity.Event;
 import ecommerceBackend.entity.User;
 import ecommerceBackend.exception.ShoppingCartNotFoundException;
 import ecommerceBackend.exception.UserNotFoundException;
+import ecommerceBackend.repository.EventRepository;
 import ecommerceBackend.repository.UserRepository;
-
+import java.util.Random;
 @Service
 public class UserService {
 	
 	private final UserRepository userRepository;
+	private final EventRepository eventRepository;
 	private UserModelAssembler assembler;
 	
-	public UserService(UserRepository userRepository, UserModelAssembler assembler) {
+	public UserService(UserRepository userRepository, UserModelAssembler assembler, EventRepository eventRepository) {
 		this.userRepository = userRepository;
 		this.assembler = assembler;
+		this.eventRepository = eventRepository;
 	}
 	
 //	@GetMapping("/users")
@@ -57,7 +61,13 @@ public class UserService {
 //	@PostMapping("/users")
 	public ResponseEntity<?> addNewUser(@RequestBody User newUser){
 		EntityModel<User> entityModel = assembler.toModel(userRepository.save(newUser));
-        return ResponseEntity 
+//        String ipAddress = createRandomIpAddress();
+        String description = "New User Created. Username: " + newUser.getUsername() + ".";
+        Event event = new Event();
+        event.setDescription(description);
+//        event.setIpAddress(ipAddress);
+		eventRepository.save(event);
+		return ResponseEntity 
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) 
                 .body(entityModel);
 	}
@@ -83,4 +93,12 @@ public class UserService {
     	userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+	
+//	public static String createRandomIpAddress() {
+//        return randomNumber() + "." + randomNumber() + "." + randomNumber() + "." + randomNumber();
+//    }
+//
+//    public static int randomNumber() {
+//        return new Random().nextInt((255 - 1) + 1) + 1;
+//    }
 }
