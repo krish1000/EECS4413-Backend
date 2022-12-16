@@ -3,6 +3,7 @@ package ecommerceBackend.service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,18 +21,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import ecommerceBackend.assembler.ShoppingCartModelAssembler;
 import ecommerceBackend.controller.ShoppingCartController;
 import ecommerceBackend.entity.ShoppingCart;
+import ecommerceBackend.entity.ShoppingCartItem;
+import ecommerceBackend.entity.User;
 import ecommerceBackend.exception.ShoppingCartNotFoundException;
+import ecommerceBackend.exception.UserNotFoundException;
 import ecommerceBackend.repository.ShoppingCartRepository;
+import ecommerceBackend.repository.UserRepository;
 
 @Service
 public class ShoppingCartService {
 	
 	private final ShoppingCartRepository repository;
+//	private final UserRepository userRepository;
 	private final ShoppingCartModelAssembler assembler;
 	
 	public ShoppingCartService(ShoppingCartRepository repository,ShoppingCartModelAssembler assembler) {
 		this.repository = repository;
 		this.assembler = assembler;
+//		this.userRepository = userRepository;
 	}
 	
 //    @GetMapping("/shopping-carts")
@@ -65,6 +72,24 @@ public class ShoppingCartService {
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) 
                 .body(entityModel);
     }
+
+	public ResponseEntity<?> deleteShoppingCart(Long id) {
+		// TODO Auto-generated method stub
+        ShoppingCart shoppingCart = repository.findById(id) //
+                .orElseThrow(() -> new ShoppingCartNotFoundException(id));
+        
+        shoppingCart.getShoppingCartItems().clear();
+        repository.save(shoppingCart);
+        
+        return ResponseEntity.ok(null);
+	}
+
+//	public ResponseEntity<?> updateShoppingCart(ShoppingCart newShoppingCart, Long userId) {
+//		// TODO Auto-generated method stub
+//		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+//
+//		return null;
+//	}
 
 
 }

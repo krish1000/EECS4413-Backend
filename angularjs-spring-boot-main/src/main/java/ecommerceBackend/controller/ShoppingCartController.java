@@ -11,6 +11,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,5 +53,15 @@ public class ShoppingCartController {
     @GetMapping("/shopping-carts/{id}")
     public EntityModel<ShoppingCart> one(@PathVariable("id") Long id) {
     	return shoppingCartService.one(id);
+    }
+    
+//    @PutMapping("/shopping-carts/{id}")
+//    public ResponseEntity<?> updateShoppingCart(@RequestBody ShoppingCart newShoppingCart, @PathVariable Long id) {
+//    	return shoppingCartService.updateShoppingCart(newShoppingCart, id);
+//    }
+    
+    @DeleteMapping("/shopping-carts/{id}")
+    public ResponseEntity<?> deleteShoppingCart(@PathVariable Long id){
+    	return shoppingCartService.deleteShoppingCart(id);
     }
 }
