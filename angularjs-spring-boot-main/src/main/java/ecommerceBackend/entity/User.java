@@ -52,6 +52,11 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     private ShoppingCart shoppingCart = new ShoppingCart();
     //targetEntity = ShoppingCart.class, fetch = FetchType.LAZY
+    
+    @OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="order_id")
+    private List<Order> order = new ArrayList<Order>();
+    
 //    @JsonIgnore
     
 //    @Column(name = "shopping_cart_id")

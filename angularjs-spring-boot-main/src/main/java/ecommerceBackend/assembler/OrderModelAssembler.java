@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import ecommerceBackend.controller.OrderController;
 import ecommerceBackend.entity.Order;
-import ecommerceBackend.entity.Status;
+//import ecommerceBackend.entity.Status;
 
 @Component
 public class OrderModelAssembler implements RepresentationModelAssembler<Order, EntityModel<Order>> {
@@ -24,10 +24,10 @@ public class OrderModelAssembler implements RepresentationModelAssembler<Order, 
 
         // Conditional links based on state of the order
 
-        if (order.getStatus() == Status.IN_PROGRESS) {
-            orderModel.add(linkTo(methodOn(OrderController.class).cancel(order.getId())).withRel("cancel"));
-            orderModel.add(linkTo(methodOn(OrderController.class).complete(order.getId())).withRel("complete"));
-        }
+//        if (order.getStatus() == Status.IN_PROGRESS) {
+//            orderModel.add(linkTo(methodOn(OrderController.class).cancel(order.getId())).withRel("cancel"));
+//            orderModel.add(linkTo(methodOn(OrderController.class).complete(order.getId())).withRel("complete"));
+//        }
 
         return orderModel;
     }
