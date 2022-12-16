@@ -33,13 +33,13 @@
 //            
 //            employeeRepository.findAll().forEach(employee -> log.info("Preloaded " + employee));
 //
-//            orderRepository.save(new Order("MacBook Pro", Status.COMPLETED));
-//            orderRepository.save(new Order("iPhone", Status.IN_PROGRESS));
+////            orderRepository.save(new Order("MacBook Pro", Status.COMPLETED));
+////            orderRepository.save(new Order("iPhone", Status.IN_PROGRESS));
 //
-//            orderRepository.findAll().forEach(order -> {
-//              log.info("Preloaded " + order);
-//            });
-//            
+////            orderRepository.findAll().forEach(order -> {
+////              log.info("Preloaded " + order);
+////            });
+////            
 //            /****This part is actually for our ecommerce proj****/
 //
 //            //-----Item Example
@@ -58,10 +58,10 @@
 //            
 //            //-----Address Example
 //            /*e.g args 	public Address(Long userID, String street, String province, String country, String zip, String phone) {*/
-//            log.info("Preloading " + addressRepository.save(new Address((long)999, "101 Pond Street", "Ontario", "Canada", "M3J 1P3", "416-999-9999")));
-//            log.info("Preloading " + addressRepository.save(new Address((long)888, "4207 Keele Street", "Ontario", "Canada", "M3J 1P3", "416-888-8989")));
+////            log.info("Preloading " + addressRepository.save(new Address((long)999, "101 Pond Street", "Ontario", "Canada", "M3J 1P3", "416-999-9999")));
+////            log.info("Preloading " + addressRepository.save(new Address((long)888, "4207 Keele Street", "Ontario", "Canada", "M3J 1P3", "416-888-8989")));
 //       
-//            addressRepository.findAll().forEach(address -> log.info("Preloaded " + address));
+////            addressRepository.findAll().forEach(address -> log.info("Preloaded " + address));
 //        };
 //    }
 //}

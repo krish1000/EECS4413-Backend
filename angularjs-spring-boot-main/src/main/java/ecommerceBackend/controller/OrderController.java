@@ -6,6 +6,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
@@ -26,50 +27,64 @@ import ecommerceBackend.entity.Order;
 import ecommerceBackend.entity.Status;
 import ecommerceBackend.exception.OrderNotFoundException;
 import ecommerceBackend.repository.OrderRepository;
+import ecommerceBackend.service.OrderService;
 
 @RestController
 public class OrderController {
 
-    private final OrderRepository orderRepository;
-    private final OrderModelAssembler assembler;
+	@Autowired
+	private final OrderService orderService;
+	
+//    private final OrderRepository orderRepository;
+//    private final OrderModelAssembler assembler;
 
-    public OrderController(OrderRepository orderRepository, OrderModelAssembler assembler) {
-
-        this.orderRepository = orderRepository;
-        this.assembler = assembler;
-    }
+//    public OrderController(OrderRepository orderRepository, OrderModelAssembler assembler) {
+//
+//        this.orderRepository = orderRepository;
+//        this.assembler = assembler;
+//    }
+	
+	public OrderController(OrderService orderService) {
+		this.orderService = orderService;
+	}
 
     @GetMapping("/orders")
     public CollectionModel<EntityModel<Order>> all() {
-
-        List<EntityModel<Order>> orders = orderRepository.findAll()
-                .stream() //
-                .map(assembler::toModel) //
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(orders, //
-                linkTo(methodOn(OrderController.class).all()).withSelfRel());
+    	return orderService.all();
+//        List<EntityModel<Order>> orders = orderRepository.findAll()
+//                .stream() //
+//                .map(assembler::toModel) //
+//                .collect(Collectors.toList());
+//
+//        return CollectionModel.of(orders, //
+//                linkTo(methodOn(OrderController.class).all()).withSelfRel());
     }
 
     @GetMapping("/orders/{id}")
     public EntityModel<Order> one(@PathVariable Long id) {
-
-        Order order = orderRepository.findById(id) //
-                .orElseThrow(() -> new OrderNotFoundException(id));
-
-        return assembler.toModel(order);
+    	return orderService.one(id);
+//        Order order = orderRepository.findById(id) //
+//                .orElseThrow(() -> new OrderNotFoundException(id));
+//
+//        return assembler.toModel(order);
+    }
+    
+    @DeleteMapping("/orders/{id}")
+    public ResponseEntity<?> deleteOrder(@PathVariable Long id){
+    	return orderService.deleteOrder(id);
     }
 
-//    @PostMapping("/orders")
-//    public ResponseEntity<EntityModel<Order>> newOrder(@RequestBody Order order) {
-//
+    //id is userid
+    @PostMapping("/orders/{id}")
+    public ResponseEntity<EntityModel<Order>> newOrder(@RequestBody Order order, @PathVariable Long id) {
+    	return orderService.newOrder(order, id);
 ////        order.setStatus(Status.IN_PROGRESS);
 //        Order newOrder = orderRepository.save(order);
 //
 //        return ResponseEntity //
 //                .created(linkTo(methodOn(OrderController.class).one(newOrder.getId())).toUri()) //
 //                .body(assembler.toModel(newOrder));
-//    }
+    }
 
 //    @DeleteMapping("/orders/{id}/cancel")
 //    public ResponseEntity<?> cancel(@PathVariable Long id) {

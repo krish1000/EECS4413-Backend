@@ -17,21 +17,39 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.mediatype.problem.Problem;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+
 import ecommerceBackend.assembler.OrderModelAssembler;
+import ecommerceBackend.assembler.ShoppingCartItemModelAssembler;
 import ecommerceBackend.controller.OrderController;
+import ecommerceBackend.entity.Item;
 import ecommerceBackend.entity.Order;
+import ecommerceBackend.entity.ShoppingCart;
+import ecommerceBackend.entity.User;
 import ecommerceBackend.exception.OrderNotFoundException;
+import ecommerceBackend.exception.ShoppingCartNotFoundException;
+import ecommerceBackend.exception.UserNotFoundException;
 import ecommerceBackend.repository.OrderRepository;
+import ecommerceBackend.repository.ShoppingCartRepository;
+import ecommerceBackend.repository.UserRepository;
 
 @Service
 public class OrderService {
 	
 	private final OrderRepository repository;
+	private final ShoppingCartRepository shoppingCartRepository;
+	private final UserRepository userRepository;
 	private final OrderModelAssembler assembler;
 	
-	public OrderService(OrderRepository repository, OrderModelAssembler assembler) {
+	public OrderService(OrderRepository repository, OrderModelAssembler assembler, 
+			   ShoppingCartRepository shoppingCartRepository, UserRepository userRepository) {
 		this.repository = repository;
 		this.assembler = assembler;
+		this.shoppingCartRepository = shoppingCartRepository;
+		this.userRepository = userRepository;
 	}
 	
 //	@GetMapping("/orders")
@@ -54,6 +72,34 @@ public class OrderService {
 
         return assembler.toModel(order);
     }
+
+	public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+		repository.deleteById(id);
+    	return ResponseEntity.ok(null);
+	}
+
+	//id is shoppingcart id
+	public ResponseEntity<EntityModel<Order>> newOrder(Order order, @PathVariable Long userId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+//		Long scId = user.getShoppingCart()
+    	ShoppingCart shoppingCart = user.getShoppingCart();
+    	order.setShoppingCart(shoppingCart);
+		user.getOrders().add(order);
+    	
+		EntityModel<Order> entityModel = assembler.toModel(repository.save(order));
+
+        return ResponseEntity 
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) 
+                .body(entityModel);
+
+//		return ResponseEntity //
+//          .status(HttpStatus.METHOD_NOT_ALLOWED) //
+//          .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE) //
+//          .body(Problem.create() //
+//              .withTitle("Method not allowed") //
+//              .withDetail("error occured"));
+		 
+	}
     
 //    // get items by Type
 ////    @GetMapping("//type/{type}")

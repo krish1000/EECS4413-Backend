@@ -34,7 +34,7 @@ public class Order {
 	//maybe not needed to map to address table incase user doesn't want address to be saved after
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="addressId")
-    private Address shippingAddress;
+    private Address address;
     
     private String date;
 	
@@ -42,11 +42,11 @@ public class Order {
     }
 
     
-    public Order(String creditCard, ShoppingCart shoppingCart, Address shippingAddress) {
+    public Order(String creditCard, Address address) {
 		this.creditCard = creditCard;
 //		this.userId = userId;
-		this.shoppingCart = shoppingCart;
-		this.shippingAddress = shippingAddress;
+//		this.shoppingCart = shoppingCart;
+		this.address = address;
 		
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		LocalDateTime now = LocalDateTime.now();
@@ -61,7 +61,7 @@ public class Order {
 	@Override
 	public String toString() {
 		return "Order{" + "id=" + this.id + ", creditCard='" + creditCard + ", orderItems="
-				+ shoppingCart + ", address=" + shippingAddress + "]";
+				+ shoppingCart + ", address=" + address + ", date=" + this.date + "]";
 	}
 
 
@@ -90,17 +90,18 @@ public class Order {
 
 
 	public void setShoppingCart(ShoppingCart shoppingCart) {
+		//might have to deep copy not too sure but we'll leave this as be
 		this.shoppingCart = shoppingCart;
 	}
 
 
-	public Address getShippingAddress() {
-		return shippingAddress;
+	public Address getaddress() {
+		return address;
 	}
 
 
-	public void setShippingAddress(Address shippingAddress) {
-		this.shippingAddress = shippingAddress;
+	public void setaddress(Address address) {
+		this.address = address;
 	}
     
 	public String getDate() {

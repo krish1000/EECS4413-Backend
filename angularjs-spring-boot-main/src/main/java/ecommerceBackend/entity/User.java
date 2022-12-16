@@ -55,7 +55,7 @@ public class User {
     
     @OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name="order_id")
-    private List<Order> order = new ArrayList<Order>();
+    private List<Order> orders = new ArrayList<Order>();
     
 //    @JsonIgnore
     
@@ -191,7 +191,13 @@ public class User {
 		this.shoppingCart = shoppingCart;
 	}
 
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
 	
+	public List<Order> getOrders() {
+		return this.orders;
+	}
 	
 	// do equals method
 	@Override
