@@ -42,15 +42,16 @@ public class Order {
     }
 
     
-    public Order(String creditCard, Address address) {
+    public Order(String creditCard, Address address, String date) {
 		this.creditCard = creditCard;
 //		this.userId = userId;
 //		this.shoppingCart = shoppingCart;
 		this.address = address;
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-		LocalDateTime now = LocalDateTime.now();
-		this.date = dtf.format(now);
+//		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+//		LocalDateTime now = LocalDateTime.now();
+//		this.date = dtf.format(now);
+		this.date = date;
 	}
     
     
@@ -91,7 +92,11 @@ public class Order {
 
 	public void setShoppingCart(ShoppingCart shoppingCart) {
 		//might have to deep copy not too sure but we'll leave this as be
-		this.shoppingCart = shoppingCart;
+		this.shoppingCart = new ShoppingCart();
+		this.shoppingCart.setShoppingCartItems(shoppingCart.getShoppingCartItems());
+//		for(ShoppingCartItem cartItem: shoppingCart.getShoppingCartItems()) {
+//			this.shopp
+//		}
 	}
 
 
@@ -106,6 +111,10 @@ public class Order {
     
 	public String getDate() {
 		return this.date;
+	}
+	
+	public void setDate(String date) {
+		this.date = date;
 	}
     
 

@@ -76,7 +76,7 @@ public class OrderController {
 
     //id is userid
     @PostMapping("/orders/{id}")
-    public ResponseEntity<EntityModel<Order>> newOrder(@RequestBody Order order, @PathVariable Long id) {
+    public ResponseEntity<?> newOrder(@RequestBody Order order, @PathVariable Long id) {
     	return orderService.newOrder(order, id);
 ////        order.setStatus(Status.IN_PROGRESS);
 //        Order newOrder = orderRepository.save(order);
