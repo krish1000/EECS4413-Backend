@@ -52,7 +52,8 @@ public class ShoppingCartItemController {
 	    return shoppingCartItemService.updateShoppingCartItem(newShoppingCartItem, shoppingCartItemId);   
     }
   
-    @DeleteMapping("/shopping-cart-items/{id}")
+    // DELETE
+    @PostMapping("/shopping-cart-items/{id}")
 	public ResponseEntity<?> deleteShoppingCartItem(@PathVariable Long id) {
     	return shoppingCartItemService.deleteShoppingCartItem(id);
 	}

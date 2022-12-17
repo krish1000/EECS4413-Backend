@@ -60,7 +60,8 @@ public class ShoppingCartController {
 //    	return shoppingCartService.updateShoppingCart(newShoppingCart, id);
 //    }
     
-    @DeleteMapping("/shopping-carts/{id}")
+    //DELETE
+    @PostMapping("/shopping-carts/{id}")
     public ResponseEntity<?> deleteShoppingCart(@PathVariable Long id){
     	return shoppingCartService.deleteShoppingCart(id);
     }
